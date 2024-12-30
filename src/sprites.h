@@ -6,6 +6,8 @@
 typedef enum {
     PIXEL_SPRITE,
     PLAYER_SPRITE,
+    GUN_SPRITE,
+    BULLET_SPRITE,
     CURSOR_SPRITE,
 
     SPRITE_CNT

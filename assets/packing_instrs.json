@@ -1,8 +1,6 @@
 {
     "textures": [
-        "textures/pixel.png",
-        "textures/world.png",
-        "textures/ui.png"
+        "textures.png"
     ],
 	"fonts": [
 		{
