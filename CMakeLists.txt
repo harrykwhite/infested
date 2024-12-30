@@ -13,6 +13,7 @@ add_executable(infested
 	src/entry.c
 	src/sprites.c
 	src/component_types.c
+	src/camera.c
 	src/ents/ents.c
 	src/ents/player_ent.c
 	src/scenes/scene_types.c
@@ -22,6 +23,7 @@ add_executable(infested
 	src/asset_indexes.h
 	src/sprites.h
 	src/component_types.h
+	src/camera.h
 	src/ents/ents.h
 	src/scenes/scene_types.h
 	src/scenes/title_screen.h

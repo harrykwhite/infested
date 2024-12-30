@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <zf4.h>
+#include "../camera.h"
 
 typedef enum {
     CAM_WORLD_RENDER_LAYER,
@@ -11,6 +12,7 @@ typedef enum {
 } WorldRenderLayer;
 
 typedef struct {
+    CameraMeta camMeta;
     ZF4EntID playerEntID;
 } World;
 

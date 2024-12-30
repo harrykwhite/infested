@@ -39,7 +39,7 @@ bool init_world(ZF4Scene* scene) {
     scene->renderer.bgColor = BG_COLOR;
 
     world->playerEntID = spawn_player_ent((ZF4Vec2D) { 0.0f, 0.0f }, scene);
-    scene->renderer.cam.pos = zf4_get_ent(world->playerEntID, scene)->pos;
+    world->camMeta.pos = zf4_get_ent(world->playerEntID, scene)->pos;
 
     return true;
 }
@@ -50,6 +50,12 @@ bool world_tick(ZF4Scene* scene, int* sceneChangeIndex) {
     update_player_vels(world->playerEntID, scene);
     translate_ents_by_vel(scene);
     write_render_data_of_ents(scene);
+
+    camera_tick(&world->camMeta, scene, world->playerEntID);
+
+    if (zf4_is_key_pressed(ZF4_KEY_SPACE)) {
+        shake_camera(&world->camMeta, 4.0f);
+    }
 
     //
     // Cursor
