@@ -30,6 +30,11 @@ void init_world_render_layer_props(ZF4RenderLayerProps* props, int layerIndex) {
 }
 
 void load_world_component_type_limit(int* typeLimit, int typeIndex) {
+    switch (typeIndex) {
+        case GUN_COMPONENT:
+            *typeLimit = 1;
+            break;
+    }
 }
 
 bool init_world(ZF4Scene* scene) {
@@ -41,21 +46,20 @@ bool init_world(ZF4Scene* scene) {
     world->playerEntID = spawn_player_ent((ZF4Vec2D) { 0.0f, 0.0f }, scene);
     world->camMeta.pos = zf4_get_ent(world->playerEntID, scene)->pos;
 
+    spawn_gun_ent(world->playerEntID, 5, scene);
+
     return true;
 }
 
 bool world_tick(ZF4Scene* scene, int* sceneChangeIndex) {
     World* world = scene->userData;
 
-    update_player_vels(world->playerEntID, scene);
+    update_player_ent_vels(scene);
     translate_ents_by_vel(scene);
+    update_gun_ents(scene, &world->camMeta);
     write_render_data_of_ents(scene);
 
     camera_tick(&world->camMeta, scene, world->playerEntID);
-
-    if (zf4_is_key_pressed(ZF4_KEY_SPACE)) {
-        shake_camera(&world->camMeta, 4.0f);
-    }
 
     //
     // Cursor

@@ -4,7 +4,7 @@
 #include "scenes/scene_types.h"
 
 int main() {
-    ZF4UserGameInfo userGameInfo = {
+    const ZF4UserGameInfo userGameInfo = {
         .windowInitWidth = 1280,
         .windowInitHeight = 720,
         .windowTitle = "Infested",

@@ -29,7 +29,7 @@ static void load_gun_sprite_src_rect(ZF4Rect* srcRect, int frameIndex) {
         case 0:
             srcRect->x = 32;
             srcRect->y = 0;
-            srcRect->width = 20;
+            srcRect->width = 22;
             srcRect->height = 6;
             break;
     }

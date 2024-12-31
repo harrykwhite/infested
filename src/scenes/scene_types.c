@@ -22,7 +22,7 @@ void load_scene_type_info(ZF4SceneTypeInfo* typeInfo, int typeIndex) {
             typeInfo->renderLayerCnt = WORLD_RENDER_LAYER_CNT;
             typeInfo->camRenderLayerCnt = UI_WORLD_RENDER_LAYER;
             typeInfo->renderLayerPropsInitializer = init_world_render_layer_props;
-            typeInfo->entLimit = 32;
+            typeInfo->entLimit = 256;
             typeInfo->compTypeLimitLoader = load_world_component_type_limit;
             typeInfo->init = init_world;
             typeInfo->tick = world_tick;

@@ -7,6 +7,7 @@ typedef enum {
     VELOCITY_COMPONENT,
     SPRITE_COMPONENT,
     ACTOR_COMPONENT,
+    GUN_COMPONENT,
     HITBOX_COMPONENT,
     DMG_TEXT_COMPONENT,
 
@@ -20,6 +21,7 @@ typedef struct {
 typedef struct {
     int spriteIndex;
     ZF4Vec2D origin;
+    float rot;
     ZF4Vec2D scale;
     float alpha;
 
@@ -32,6 +34,13 @@ typedef struct {
     int invTime;
     int invTimeMax;
 } ActorComponent;
+
+typedef struct {
+    ZF4EntID ownerEntID;
+
+    int shootTime;
+    int shootInterval;
+} GunComponent;
 
 typedef struct {
     int dmg;
