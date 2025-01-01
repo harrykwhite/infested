@@ -8,14 +8,16 @@ typedef enum {
     SPRITE_COMPONENT,
     ACTOR_COMPONENT,
     GUN_COMPONENT,
+    DAMAGER_COMPONENT,
     HITBOX_COMPONENT,
-    DMG_TEXT_COMPONENT,
 
     COMPONENT_TYPE_CNT
 } ComponentType;
 
 typedef struct {
     ZF4Vec2D vel;
+    ZF4Vec2D velLerpTarg;
+    float velLerpFactor;
 } VelocityComponent;
 
 typedef struct {
@@ -44,14 +46,15 @@ typedef struct {
 
 typedef struct {
     int dmg;
+    ZF4Vec2D force;
+    bool (*willCollideWith)(const ZF4EntID entID, const ZF4Scene* const scene);
+} DamagerComponent;
+
+typedef struct {
+    int dmg;
     ZF4Vec2D force; // NOTE: Could be made into strength, if we want direction to be calculated based on collision relative to the hitbox.
     ZF4RectF collider;
 } HitboxComponent;
-
-typedef struct {
-    ZF4CharBatchID charBatchID;
-    int life;
-} DmgTextComponent;
 
 void load_component_type_info(ZF4ComponentTypeInfo* typeInfo, int typeIndex);
 

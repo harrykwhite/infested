@@ -6,25 +6,37 @@
 
 #define BULLET_SPD 13.0f
 
-ZF4EntID spawn_gun_ent(const ZF4EntID ownerEntID, const int shootInterval, const ZF4Scene* const scene) {
+bool spawn_gun_ent(ZF4EntID* const entID, const ZF4EntID ownerEntID, const int shootInterval, const ZF4Scene* const scene) {
+    assert(zf4_is_zero(entID, sizeof(*entID)));
     assert(zf4_does_ent_exist(ownerEntID, scene));
     assert(shootInterval > 0);
 
     const ZF4Ent* const ownerEnt = zf4_get_ent(ownerEntID, scene);
-    const ZF4EntID entID = zf4_spawn_ent(ownerEnt->pos, scene);
 
-    SpriteComponent* spriteComp = zf4_add_component_to_ent(SPRITE_COMPONENT, entID, scene);
+    if (!zf4_spawn_ent(entID, ownerEnt->pos, scene)) {
+        return false;
+    }
+
+    if (!zf4_add_component_to_ent(SPRITE_COMPONENT, *entID, scene)) {
+        return false;
+    }
+
+    SpriteComponent* spriteComp = zf4_get_ent_component(*entID, SPRITE_COMPONENT, scene);
     spriteComp->spriteIndex = GUN_SPRITE;
     spriteComp->origin = (ZF4Vec2D) {0.0f, 0.5f};
 
-    GunComponent* gunComp = zf4_add_component_to_ent(GUN_COMPONENT, entID, scene);
+    if (!zf4_add_component_to_ent(GUN_COMPONENT, *entID, scene)) {
+        return false;
+    }
+
+    GunComponent* gunComp = zf4_get_ent_component(*entID, GUN_COMPONENT, scene);
     gunComp->ownerEntID = ownerEntID;
     gunComp->shootInterval = shootInterval;
 
-    return entID;
+    return true;
 }
 
-void update_gun_ents(const ZF4Scene* const scene, CameraMeta* const camMeta) {
+bool update_gun_ents(const ZF4Scene* const scene, CameraMeta* const camMeta) {
     const ZF4SceneTypeInfo* const sceneTypeInfo = zf4_get_scene_type_info(scene->typeIndex);
     const ZF4Vec2D mouseCamPos = zf4_screen_to_camera_pos(zf4_get_mouse_pos(), &scene->renderer.cam);
 
@@ -63,10 +75,13 @@ void update_gun_ents(const ZF4Scene* const scene, CameraMeta* const camMeta) {
         } else {
             // TEMP: Check a function pointer.
             if (zf4_is_mouse_button_down(ZF4_MOUSE_BUTTON_LEFT)) {
-                const float bulletPosOffsDist = zf4_get_sprite_src_rect(spriteComp->spriteIndex, 0).width;
+                const float bulletPosOffsDist = (float)zf4_get_sprite_src_rect(spriteComp->spriteIndex, 0).width;
                 const ZF4Vec2D bulletPosOffs = zf4_calc_len_dir_vec_2d(bulletPosOffsDist, spriteComp->rot);
                 const ZF4Vec2D bulletPos = zf4_calc_vec_2d_sum(ownerEnt->pos, bulletPosOffs);
-                spawn_bullet_ent(bulletPos, BULLET_SPD, spriteComp->rot, scene);
+                
+                if (!spawn_bullet_ent_noref(bulletPos, BULLET_SPD, spriteComp->rot, 1, scene)) {
+                    return false;
+                }
 
                 shake_camera(camMeta, 1.0f);
 
@@ -74,4 +89,6 @@ void update_gun_ents(const ZF4Scene* const scene, CameraMeta* const camMeta) {
             }
         }
     }
+
+    return true;
 }

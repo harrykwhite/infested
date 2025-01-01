@@ -3,36 +3,53 @@
 #include "../component_types.h"
 #include "../sprites.h"
 
+#define MOVE_SPD 3.0f
+#define VEL_LERP 0.25f
 #define INIT_HP 100
 #define INV_TIME 30
-#define VEL_LERP 0.25f
-#define MOVE_SPD 3.0f
 
-ZF4EntID spawn_player_ent(ZF4Vec2D pos, ZF4Scene* scene) {
-    ZF4EntID entID = zf4_spawn_ent(pos, scene);
+bool spawn_player_ent(ZF4EntID* const entID, const ZF4Vec2D pos, const ZF4Scene* const scene) {
+    assert(zf4_is_zero(entID, sizeof(*entID)));
 
-    zf4_add_component_to_ent(VELOCITY_COMPONENT, entID, scene);
+    if (!zf4_spawn_ent(entID, pos, scene)) {
+        return false;
+    }
 
-    SpriteComponent* spriteComp = zf4_add_component_to_ent(SPRITE_COMPONENT, entID, scene);
+    if (!zf4_add_component_to_ent(VELOCITY_COMPONENT, *entID, scene)) {
+        return false;
+    }
+
+    VelocityComponent* const velComp = zf4_get_ent_component(*entID, VELOCITY_COMPONENT, scene);
+    velComp->velLerpFactor = VEL_LERP;
+
+    if (!zf4_add_component_to_ent(SPRITE_COMPONENT, *entID, scene)) {
+        return false;
+    }
+
+    SpriteComponent* const spriteComp = (SpriteComponent*)zf4_get_ent_component(*entID, SPRITE_COMPONENT, scene);
     spriteComp->spriteIndex = PLAYER_SPRITE;
 
-    ActorComponent* actorComp = zf4_add_component_to_ent(ACTOR_COMPONENT, entID, scene);
+    if (!zf4_add_component_to_ent(ACTOR_COMPONENT, *entID, scene)) {
+        return false;
+    }
+
+    ActorComponent* const actorComp = (ActorComponent*)zf4_get_ent_component(*entID, ACTOR_COMPONENT, scene);
     actorComp->hp = INIT_HP;
     actorComp->invTimeMax = INV_TIME;
 
-    ZF4Ent* const ent = zf4_get_ent(entID, scene);
+    ZF4Ent* const ent = zf4_get_ent(*entID, scene);
     ent->tag = PLAYER_ENT_TAG;
 
-    return entID;
+    return true;
 }
 
-void update_player_ent_vels(ZF4Scene* scene) {
+void update_player_ent_vel_comps(ZF4Scene* scene) {
     const ZF4Vec2D moveAxis = {
         (float)(zf4_is_key_down(ZF4_KEY_D) - zf4_is_key_down(ZF4_KEY_A)),
         (float)(zf4_is_key_down(ZF4_KEY_S) - zf4_is_key_down(ZF4_KEY_W))
     };
 
-    const ZF4Vec2D velTarg = zf4_calc_vec_2d_scaled(moveAxis, MOVE_SPD);
+    const ZF4Vec2D velLerpTarg = zf4_calc_vec_2d_scaled(moveAxis, MOVE_SPD);
 
     const ZF4SceneTypeInfo* const sceneTypeInfo = zf4_get_scene_type_info(scene->typeIndex);
 
@@ -48,7 +65,6 @@ void update_player_ent_vels(ZF4Scene* scene) {
         }
 
         VelocityComponent* const velComp = zf4_get_ent_component(entID, VELOCITY_COMPONENT, scene);
-        velComp->vel.x = zf4_lerp(velComp->vel.x, velTarg.x, VEL_LERP);
-        velComp->vel.y = zf4_lerp(velComp->vel.y, velTarg.y, VEL_LERP);
+        velComp->velLerpTarg = velLerpTarg;
     }
 }

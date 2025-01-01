@@ -28,7 +28,7 @@ void init_title_screen_render_layer_props(ZF4RenderLayerProps* props, int layerI
 }
 
 bool init_title_screen(ZF4Scene* scene) {
-    TitleScreen* ts = scene->userData;
+    TitleScreen* ts = (TitleScreen*)scene->userData;
 
     ts->titleTextCBID = zf4_activate_any_char_batch(&scene->renderer, GENERAL_TITLE_SCREEN_RENDER_LAYER, 8, EB_GARAMOND_72_FONT);
     zf4_write_to_char_batch(&scene->renderer, ts->titleTextCBID, "Infested", ZF4_FONT_HOR_ALIGN_CENTER, ZF4_FONT_VER_ALIGN_CENTER);
@@ -42,7 +42,7 @@ bool init_title_screen(ZF4Scene* scene) {
 }
 
 bool title_screen_tick(ZF4Scene* scene, int* sceneChangeIndex) {
-    TitleScreen* ts = scene->userData;
+    TitleScreen* ts = (TitleScreen*)scene->userData;
 
     if (zf4_is_key_down(ZF4_KEY_ENTER)) {
         *sceneChangeIndex = WORLD_SCENE;

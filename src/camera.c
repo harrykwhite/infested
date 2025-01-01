@@ -5,7 +5,7 @@
 #define POS_LERP 0.25f
 #define SHAKE_LERP 0.1f
 
-void camera_tick(CameraMeta* const camMeta, const ZF4Scene* const scene, const ZF4EntID playerEntID) {
+void camera_tick(CameraMeta* const camMeta, ZF4Scene* const scene, const ZF4EntID playerEntID) {
     ZF4Camera* const cam = &scene->renderer.cam;
 
     // Determine the target position.

@@ -24,6 +24,17 @@ static void load_player_sprite_src_rect(ZF4Rect* srcRect, int frameIndex) {
     }
 }
 
+static void load_enemy_sprite_src_rect(ZF4Rect* srcRect, int frameIndex) {
+    switch (frameIndex) {
+        case 0:
+            srcRect->x = 0;
+            srcRect->y = 40;
+            srcRect->width = 24;
+            srcRect->height = 40;
+            break;
+    }
+}
+
 static void load_gun_sprite_src_rect(ZF4Rect* srcRect, int frameIndex) {
     switch (frameIndex) {
         case 0:
@@ -58,6 +69,8 @@ static void load_cursor_sprite_src_rect(ZF4Rect* srcRect, int frameIndex) {
 }
 
 void load_sprite(ZF4Sprite* sprite, int index) {
+    // TODO: Maybe make the source rectangles grid-based?
+
     switch (index) {
         case PIXEL_SPRITE:
             *sprite = (ZF4Sprite) {
@@ -73,6 +86,15 @@ void load_sprite(ZF4Sprite* sprite, int index) {
                 .texIndex = 0,
                 .frameCnt = 1,
                 .srcRectLoader = load_player_sprite_src_rect
+            };
+
+            break;
+
+        case ENEMY_SPRITE:
+            *sprite = (ZF4Sprite) {
+                .texIndex = 0,
+                .frameCnt = 1,
+                .srcRectLoader = load_enemy_sprite_src_rect
             };
 
             break;

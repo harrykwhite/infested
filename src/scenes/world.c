@@ -38,25 +38,39 @@ void load_world_component_type_limit(int* typeLimit, int typeIndex) {
 }
 
 bool init_world(ZF4Scene* scene) {
-    World* world = scene->userData;
+    World* world = (World*)scene->userData;
 
     scene->renderer.cam.scale = CAM_SCALE;
     scene->renderer.bgColor = BG_COLOR;
 
-    world->playerEntID = spawn_player_ent((ZF4Vec2D) { 0.0f, 0.0f }, scene);
+    if (!spawn_player_ent(&world->playerEntID, (ZF4Vec2D) {0.0f, 0.0f}, scene)) {
+        return false;
+    }
+
     world->camMeta.pos = zf4_get_ent(world->playerEntID, scene)->pos;
 
-    spawn_gun_ent(world->playerEntID, 5, scene);
+    if (!spawn_gun_ent_noref(world->playerEntID, 5, scene)) {
+        return false;
+    }
+
+    if (!spawn_enemy_ent_noref((ZF4Vec2D) {0.0f, 0.0f}, scene)) {
+        return false;
+    }
 
     return true;
 }
 
 bool world_tick(ZF4Scene* scene, int* sceneChangeIndex) {
-    World* world = scene->userData;
+    World* world = (World*)scene->userData;
 
-    update_player_ent_vels(scene);
-    translate_ents_by_vel(scene);
-    update_gun_ents(scene, &world->camMeta);
+    update_player_ent_vel_comps(scene);
+    proc_actor_damaging(scene);
+    ent_vel_sys(scene);
+    
+    if (!update_gun_ents(scene, &world->camMeta)) {
+        return false;
+    }
+
     write_render_data_of_ents(scene);
 
     camera_tick(&world->camMeta, scene, world->playerEntID);

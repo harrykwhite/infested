@@ -16,7 +16,9 @@ add_executable(infested
 	src/camera.c
 	src/ents/ents.c
 	src/ents/player_ent.c
+	src/ents/enemy_ent.c
 	src/ents/gun_ent.c
+	src/ents/ent_filters.c
 	src/scenes/scene_types.c
 	src/scenes/title_screen.c
 	src/scenes/world.c

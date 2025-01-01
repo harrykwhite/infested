@@ -32,14 +32,14 @@ void load_component_type_info(ZF4ComponentTypeInfo* typeInfo, int typeIndex) {
             typeInfo->alignment = alignof(GunComponent);
             break;
 
+        case DAMAGER_COMPONENT:
+            typeInfo->size = sizeof(DamagerComponent);
+            typeInfo->alignment = alignof(DamagerComponent);
+            break;
+
         case HITBOX_COMPONENT:
             typeInfo->size = sizeof(HitboxComponent);
             typeInfo->alignment = alignof(HitboxComponent);
-            break;
-
-        case DMG_TEXT_COMPONENT:
-            typeInfo->size = sizeof(DmgTextComponent);
-            typeInfo->alignment = alignof(DmgTextComponent);
             break;
     }
 }
