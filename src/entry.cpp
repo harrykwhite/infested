@@ -4,15 +4,14 @@
 #include "scenes/scene_types.h"
 
 int main() {
-    const ZF4UserGameInfo userGameInfo = {
+    const zf4::UserGameInfo userGameInfo = {
         .windowInitWidth = 1280,
         .windowInitHeight = 720,
         .windowTitle = "Infested",
         .windowResizable = true,
         .windowHideCursor = true,
 
-        .spriteCnt = SPRITE_CNT,
-        .spriteLoader = load_sprite,
+        .spritesLoader = load_sprites,
 
         .componentTypeCnt = COMPONENT_TYPE_CNT,
         .componentTypeInfoLoader = load_component_type_info,
@@ -21,5 +20,5 @@ int main() {
         .sceneTypeInfoLoader = load_scene_type_info
     };
 
-    zf4_start_game(&userGameInfo);
+    zf4::start_game(&userGameInfo);
 }

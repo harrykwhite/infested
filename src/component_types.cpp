@@ -1,15 +1,13 @@
 #include "component_types.h"
 
-#include <stdalign.h>
-
-static void load_sprite_component_defaults(void* comp) {
-    SpriteComponent* spriteComp = comp;
-    spriteComp->origin = (ZF4Vec2D) {0.5f, 0.5f};
-    spriteComp->scale = (ZF4Vec2D) {1.0f, 1.0f};
+static void load_sprite_component_defaults(zf4::Byte* const comp) {
+    const auto spriteComp = reinterpret_cast<SpriteComponent*>(comp);
+    spriteComp->origin = {0.5f, 0.5f};
+    spriteComp->scale = {1.0f, 1.0f};
     spriteComp->alpha = 1.0f;
 }
 
-void load_component_type_info(ZF4ComponentTypeInfo* typeInfo, int typeIndex) {
+void load_component_type_info(zf4::ComponentTypeInfo* typeInfo, int typeIndex) {
     switch (typeIndex) {
         case VELOCITY_COMPONENT:
             typeInfo->size = sizeof(VelocityComponent);
@@ -35,11 +33,6 @@ void load_component_type_info(ZF4ComponentTypeInfo* typeInfo, int typeIndex) {
         case DAMAGER_COMPONENT:
             typeInfo->size = sizeof(DamagerComponent);
             typeInfo->alignment = alignof(DamagerComponent);
-            break;
-
-        case HITBOX_COMPONENT:
-            typeInfo->size = sizeof(HitboxComponent);
-            typeInfo->alignment = alignof(HitboxComponent);
             break;
     }
 }

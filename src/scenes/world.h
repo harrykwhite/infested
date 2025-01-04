@@ -1,24 +1,24 @@
-#ifndef WORLD_H
-#define WORLD_H
+#pragma once
 
 #include <zf4.h>
-#include "../camera.h"
+#include "../sprites.h"
 
-typedef enum {
+enum WorldRenderLayer {
     CAM_WORLD_RENDER_LAYER,
     UI_WORLD_RENDER_LAYER,
 
     WORLD_RENDER_LAYER_CNT
-} WorldRenderLayer;
+};
 
-typedef struct {
-    CameraMeta camMeta;
-    ZF4EntID playerEntID;
-} World;
+struct World {
+    zf4::EntID playerEntID;
 
-void init_world_render_layer_props(ZF4RenderLayerProps* props, int layerIndex);
-void load_world_component_type_limit(int* typeLimit, int typeIndex);
-bool init_world(ZF4Scene* scene);
-bool world_tick(ZF4Scene* scene, int* sceneChangeIndex);
+    zf4::Vec2D camPosNoShake;
+    float camShake;
+};
 
-#endif
+bool init_world(zf4::Scene* const scene);
+bool world_tick(zf4::Scene* const scene, int* const sceneChangeIndex);
+void init_world_render_layer_props(zf4::RenderLayerProps* const props, const int layerIndex);
+void load_world_component_type_limit(int* const typeLimit, const int typeIndex);
+bool is_in_world(const zf4::Vec2D pos);

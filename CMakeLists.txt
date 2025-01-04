@@ -2,32 +2,29 @@ cmake_minimum_required(VERSION 3.28)
 
 project(infested)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 add_subdirectory(zf4)
 
 find_package(glfw3 CONFIG REQUIRED)
 
 add_executable(infested
-	src/entry.c
-	src/sprites.c
-	src/component_types.c
-	src/camera.c
-	src/ents/ents.c
-	src/ents/player_ent.c
-	src/ents/enemy_ent.c
-	src/ents/gun_ent.c
-	src/ents/ent_filters.c
-	src/scenes/scene_types.c
-	src/scenes/title_screen.c
-	src/scenes/world.c
+	src/entry.cpp
+	src/sprites.cpp
+	src/component_types.cpp
+	src/scenes/scene_types.cpp
+	src/scenes/title_screen.cpp
+	src/scenes/world.cpp
+	src/ents/ents.cpp
+	src/ents/player.cpp
+	src/ents/enemy.cpp
+	src/ents/gun.cpp
+	src/ents/bullet.cpp
 
 	src/asset_indexes.h
 	src/sprites.h
 	src/component_types.h
-	src/camera.h
-	src/ents/ents.h
 	src/scenes/scene_types.h
 	src/scenes/title_screen.h
 	src/scenes/world.h

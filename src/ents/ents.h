@@ -1,48 +1,53 @@
-#ifndef ENT_H
-#define ENT_H
+#pragma once
 
 #include <zf4.h>
-#include "../camera.h"
+#include "../component_types.h"
+#include "../sprites.h"
 
-typedef enum {
+enum EntTag {
     PLAYER_ENT_TAG
-} EntTag;
+};
 
-void ent_vel_sys(ZF4Scene* scene);
-void write_render_data_of_ents(ZF4Scene* scene);
-void load_ent_collider(ZF4RectF* const collider, const ZF4EntID entID, const ZF4Scene* const scene);
-bool spawn_bullet_ent(ZF4EntID* const entID, const ZF4Vec2D pos, const float spd, const float dir, const int dmg, const ZF4Scene* const scene);
-void proc_actor_damaging(ZF4Scene* scene);
+enum EntFlag : zf4::Byte {
+    SOLID_ENT_FLAG = 1 << 0
+};
 
-bool spawn_player_ent(ZF4EntID* const entID, const ZF4Vec2D pos, const ZF4Scene* const scene);
-void update_player_ent_vel_comps(ZF4Scene* scene);
+void translate_ents_by_vel(zf4::EntityManager* const entManager, zf4::Byte* const entsToDestroyBitset, zf4::MemArena* const scratchSpace);
+void write_render_data_of_ents(zf4::Scene* const scene);
+bool proc_actor_damaging(zf4::Scene* const scene, zf4::Byte* const entsToDestroyBitset);
+bool spawn_hive_ent(zf4::EntID* const entID, const zf4::Vec2D pos, zf4::EntityManager* const entManager);
 
-bool spawn_enemy_ent(ZF4EntID* const entID, const ZF4Vec2D pos, ZF4Scene* const scene);
+bool spawn_player_ent(zf4::EntID* const entID, const zf4::Vec2D pos, zf4::EntityManager* const entManager);
+void update_player_vels(zf4::EntityManager* const entManager);
 
-bool spawn_gun_ent(ZF4EntID* const entID, const ZF4EntID ownerEntID, const int shootInterval, const ZF4Scene* const scene);
-bool update_gun_ents(const ZF4Scene* const scene, CameraMeta* const camMeta);
+bool spawn_enemy_ent(zf4::EntID* const entID, const zf4::Vec2D pos, zf4::EntityManager* const entManager);
 
-bool is_player_ent(const ZF4EntID entID, const ZF4Scene* const scene);
-bool is_not_player_ent(const ZF4EntID entID, const ZF4Scene* const scene);
+bool spawn_gun_ent(zf4::EntID* const entID, const zf4::EntID ownerEntID, const int shootInterval, zf4::EntityManager* const entManager);
+bool update_gun_ents(zf4::Scene* const scene);
 
-inline bool spawn_bullet_ent_noref(const ZF4Vec2D pos, const float spd, const float dir, const int dmg, const ZF4Scene* const scene) {
-    ZF4EntID entID = {0};
-    return spawn_bullet_ent(&entID, pos, spd, dir, dmg, scene);
+bool spawn_bullet_ent(zf4::EntID* const entID, const zf4::Vec2D pos, const float spd, const float dir, const int dmg, zf4::EntityManager* const entManager);
+
+inline zf4::Rect create_ent_collider(const zf4::EntID entID, const zf4::EntityManager* const entManager, const zf4::Vec2D offs = {}) {
+    const auto spriteComp = reinterpret_cast<const SpriteComponent*>(entManager->get_ent_component(entID, SPRITE_COMPONENT));
+    return entManager->create_ent_collider(entID, spriteComp->spriteIndex, spriteComp->origin, spriteComp->scale, offs);
 }
 
-inline bool spawn_player_ent_noref(const ZF4Vec2D pos, const ZF4Scene* const scene) {
-    ZF4EntID entID = {0};
-    return spawn_player_ent(&entID, pos, scene);
+inline bool spawn_hive_ent(const zf4::Vec2D pos, zf4::EntityManager* const entManager) {
+    zf4::EntID entID = {};
+    return spawn_hive_ent(&entID, pos, entManager);
 }
 
-inline bool spawn_enemy_ent_noref(const ZF4Vec2D pos, ZF4Scene* const scene) {
-    ZF4EntID entID = {0};
-    return spawn_enemy_ent(&entID, pos, scene);
+inline bool spawn_enemy_ent(const zf4::Vec2D pos, zf4::EntityManager* const entManager) {
+    zf4::EntID entID = {};
+    return spawn_enemy_ent(&entID, pos, entManager);
 }
 
-inline bool spawn_gun_ent_noref(const ZF4EntID ownerEntID, const int shootInterval, const ZF4Scene* const scene) {
-    ZF4EntID entID = {0};
-    return spawn_gun_ent(&entID, ownerEntID, shootInterval, scene);
+inline bool spawn_gun_ent(const zf4::EntID ownerEntID, const int shootInterval, zf4::EntityManager* const entManager) {
+    zf4::EntID entID = {};
+    return spawn_gun_ent(&entID, ownerEntID, shootInterval, entManager);
 }
 
-#endif
+inline bool spawn_bullet_ent(const zf4::Vec2D pos, const float spd, const float dir, const int dmg, zf4::EntityManager* const entManager) {
+    zf4::EntID entID = {};
+    return spawn_bullet_ent(&entID, pos, spd, dir, dmg, entManager);
+}

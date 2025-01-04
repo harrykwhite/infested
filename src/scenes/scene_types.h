@@ -1,15 +1,12 @@
-#ifndef SCENE_TYPES_H
-#define SCENE_TYPES_H
+#pragma once
 
 #include <zf4.h>
 
-typedef enum {
+enum SceneType {
     TITLE_SCREEN_SCENE,
     WORLD_SCENE,
 
     SCENE_TYPE_CNT
-} SceneType;
+};
 
-void load_scene_type_info(ZF4SceneTypeInfo* typeInfo, int typeIndex);
-
-#endif
+void load_scene_type_info(zf4::SceneTypeInfo* const typeInfo, const int typeIndex);

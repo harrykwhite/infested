@@ -1,61 +1,64 @@
-#ifndef COMPONENT_TYPES_H
-#define COMPONENT_TYPES_H
+#pragma once
 
 #include <zf4.h>
 
-typedef enum {
+enum ComponentType {
     VELOCITY_COMPONENT,
     SPRITE_COMPONENT,
     ACTOR_COMPONENT,
     GUN_COMPONENT,
     DAMAGER_COMPONENT,
-    HITBOX_COMPONENT,
 
     COMPONENT_TYPE_CNT
-} ComponentType;
+};
 
-typedef struct {
-    ZF4Vec2D vel;
-    ZF4Vec2D velLerpTarg;
+enum VelocityComponentSolidEntCollisionEvent {
+    VELOCITY_COMPONENT_SOLID_COLLISION_EVENT_STOP,
+    VELOCITY_COMPONENT_SOLID_COLLISION_EVENT_DESTROY
+};
+
+struct VelocityComponent {
+    zf4::Vec2D vel;
+    zf4::Vec2D velLerpTarg;
     float velLerpFactor;
-} VelocityComponent;
+    VelocityComponentSolidEntCollisionEvent solidEntCollisionEvent;
+};
 
-typedef struct {
+struct SpriteComponent {
     int spriteIndex;
-    ZF4Vec2D origin;
+    zf4::Vec2D origin;
     float rot;
-    ZF4Vec2D scale;
+    zf4::Vec2D scale;
     float alpha;
 
-    void (*prewrite)(ZF4EntID entID, ZF4Scene* scene);
-    void (*postwrite)(ZF4EntID entID, ZF4Scene* scene);
-} SpriteComponent;
+    void (*prewrite)(zf4::EntID entID, zf4::Scene* scene);
+    void (*postwrite)(zf4::EntID entID, zf4::Scene* scene);
+};
 
-typedef struct {
+struct ActorComponent {
     int hp;
     int invTime;
-    int invTimeMax;
-} ActorComponent;
+    int invTimeMax; // NOTE: Wasting space in the cache line?
+};
 
-typedef struct {
-    ZF4EntID ownerEntID;
+struct GunComponent {
+    zf4::EntID ownerEntID;
 
     int shootTime;
     int shootInterval;
-} GunComponent;
+};
 
-typedef struct {
+enum DamagerComponentKnockbackDirType {
+    DIR_FROM_OTHER_DAMAGER_COMPONENT_KNOCKBACK_DIR_TYPE,
+    OTHER_VEL_DAMAGER_COMPONENT_KNOCKBACK_DIR_TYPE
+};
+
+struct DamagerComponent {
     int dmg;
-    ZF4Vec2D force;
-    bool (*willCollideWith)(const ZF4EntID entID, const ZF4Scene* const scene);
-} DamagerComponent;
+    float strength;
+    bool (*canDmgOtherEnt)(const zf4::EntID otherEntID, const zf4::EntityManager* const entManager);
+    bool destroyOnDmg;
+    DamagerComponentKnockbackDirType knockbackDirType;
+};
 
-typedef struct {
-    int dmg;
-    ZF4Vec2D force; // NOTE: Could be made into strength, if we want direction to be calculated based on collision relative to the hitbox.
-    ZF4RectF collider;
-} HitboxComponent;
-
-void load_component_type_info(ZF4ComponentTypeInfo* typeInfo, int typeIndex);
-
-#endif
+void load_component_type_info(zf4::ComponentTypeInfo* typeInfo, int typeIndex);
